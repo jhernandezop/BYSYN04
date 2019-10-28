@@ -125,7 +125,7 @@ class AreaEdicion extends Component {
         
         this.state.detalleLLamada=newForm
       
-      }else if(nuevoFormulario.formulario[0].ficha.canal=="telefonia"){
+      }else if(nuevoFormulario.formulario[0].ficha.canal=="tel"){
         this.state.formulario="detalletelefonia";
         const newForm=detalletelefonia 
         //PESTAÑA INFO CLIENTE = detalleLLamada.components[0].components[0]
@@ -133,6 +133,7 @@ class AreaEdicion extends Component {
         newForm.components[0].components[0].components[1].defaultValue=f.doc_nombre
         newForm.components[0].components[0].components[2].defaultValue=f.doc_Ap_paterno
         newForm.components[0].components[0].components[3].defaultValue=f.doc_patente
+        this.state.detalleLLamada=newForm
       }
 
 
