@@ -441,11 +441,12 @@ actualizarGestionData(event){
        }else if(area=="servicio_tecnico"){
           return (
               <div id="contenedorFormularios"  className='row contenedorFormularios'>
-                {this.state.formulario=="detalleLLamada" && <Form form={this.state.detalleLLamada} onChange={(schema) => this.actualizarGestionData(schema)} onSubmit={this.actualizar} />}
-                {this.state.formulario=="detalletelefonia" && <Form form={detalletelefonia} onChange={(schema) => this.actualizarGestionData(schema)}  />}
                 
-                {this.state.formulario=="seguimiento" && <Form form={seguimiento} onSubmit={this.enviargestion} />}
-                {this.state.formulario=="tipificacion" && <Form form={tipificacion} onSubmit={this.enviargestion} />}
+                {this.state.formulario=="detalleLLamada" && <Form form={this.state.detalleLLamada} onChange={(schema) => this.actualizarGestionData(schema)} onSubmit={this.actualizar} />}
+                {this.state.formulario=="detalletelefonia"  && <Form form={detalletelefonia} onChange={(schema) => this.actualizarGestionData(schema)}  />}
+                  
+                {this.state.formulario=="seguimiento"  && <Form form={tipificacionServicioNuevoGestion} onSubmit={this.enviargestion} />}
+                {this.state.formulario=="tipificacion" && <Form form={tipificacion_servicio} onSubmit={this.enviargestion} />}
                 <div className="btn-group"  role="group" aria-label="Basic example">
                   <button type="button" onClick={() => this.verFomrularioTipificacion("detalleLLamada")} className="btn btn-secondary">Detalle</button>
                   <button type="button" onClick={() => this.verFomrularioTipificacion("tipificacion")} className="btn btn-secondary">Tipificar</button>
@@ -5055,6 +5056,134 @@ const tipificacion= {
             "src": "https://files.form.io/pdf/5692b91fd1028f01000407e3/file/1ec0f8ee-6685-5d98-a847-26f67b67d6f0"
         }
     }
+}
+
+const tipificacion_servicio ={
+    "display": "form",
+    "settings": {
+        "pdf": {
+            "id": "1ec0f8ee-6685-5d98-a847-26f67b67d6f0",
+            "src": "https://files.form.io/pdf/5692b91fd1028f01000407e3/file/1ec0f8ee-6685-5d98-a847-26f67b67d6f0"
+        }
+    },
+    "components": [
+        {
+            "title": "Resultado de Gestión",
+            "collapsible": false,
+            "key": "resultadoDeGestion",
+            "type": "panel",
+            "label": "Panel",
+            "input": false,
+            "components": [
+                {
+                    "label": "Select",
+                    "widget": "choicesjs",
+                    "data": {
+                        "values": [
+                            {
+                                "label": "Información de avance",
+                                "value": "agendamiento_tercero"
+                            },
+                            {
+                                "label": "Coordinación de entrega",
+                                "value": "agendamiento_tercero"
+                            },
+                            {
+                                "label": "Finaliza entrega",
+                                "value": "cerradoconVenta"
+                            }
+                        ]
+                    },
+                    "selectThreshold": 0.3,
+                    "key": "select",
+                    "type": "select",
+                    "input": true
+                },
+                {
+                    "label": "Comentarios",
+                    "autoExpand": false,
+                    "key": "comentarios",
+                    "type": "textarea",
+                    "input": true
+                }
+            ],
+            "path": "resultadoDeGestion"
+        },
+        {
+            "label": "Enviar",
+            "showValidations": false,
+            "disableOnInvalid": true,
+            "key": "submit",
+            "type": "button",
+            "input": true
+        }
+    ]
+}
+
+const tipificacionServicioNuevoGestion = {
+    "display": "form",
+    "settings": {
+        "pdf": {
+            "id": "1ec0f8ee-6685-5d98-a847-26f67b67d6f0",
+            "src": "https://files.form.io/pdf/5692b91fd1028f01000407e3/file/1ec0f8ee-6685-5d98-a847-26f67b67d6f0"
+        }
+    },
+    "components": [
+        {
+            "title": "Resultado de llamada",
+            "collapsible": false,
+            "key": "resultadoDeLlamada",
+            "type": "panel",
+            "label": "Panel",
+            "input": false,
+            "components": [
+                {
+                    "label": "Seleccionar",
+                    "widget": "choicesjs",
+                    "data": {
+                        "values": [
+                            {
+                                "label": "Cotización de Servicio",
+                                "value": "en_seguimiento"
+                            },
+                            {
+                                "label": "Sin Respuesta",
+                                "value": "sin_respuesta"
+                            },
+                            {
+                                "label": "Datos Erroneos",
+                                "value": "datos_erroneos"
+                            },
+                            {
+                                "label": "Rechazo de cotización",
+                                "value": "sin_interes"
+                            }
+                        ]
+                    },
+                    "selectThreshold": 0.3,
+                    "key": "select",
+                    "type": "select",
+                    "input": true
+                },
+                {
+                    "label": "Comentarios",
+                    "autoExpand": false,
+                    "key": "comentarios",
+                    "type": "textarea",
+                    "input": true
+                }
+            ],
+            "path": "resultadoDeLlamada"
+        },
+        {
+            "label": "Enviar",
+            "showValidations": false,
+            "disableOnInvalid": true,
+            "key": "submit",
+            "type": "button",
+            "input": true
+        }
+    ]
 }
 
 export default AreaEdicion;
