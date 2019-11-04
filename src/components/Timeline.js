@@ -29,16 +29,17 @@ class Timelines extends Component {
 
         console.log(nextProps.edicion[0].ficha)
         const uid=nextProps.edicion[0].ficha.caso_ES
-        if(uid!=this.state.uniqueid){
+        //if(uid!=this.state.uniqueid && uid!=""){
           //this.state.uniqueid=uid
           this.setState({uniqueid:uid});
           this.state.tipoFicha=nextProps.edicion[0].ficha.canal
           console.log(this.state.tipoFicha)
           this.handleSubmit()
-        }
+        //}
         
     }else{
       this.setState({timelinedata:[]});
+      this.setState({uniqueid:""});
     }
     
   }
@@ -50,30 +51,39 @@ class Timelines extends Component {
     console.log(uid)
 
     const tx=JSON.stringify({
-          "tx"    : "anyQ",
-          "index" : "gm_webleads_full_0.3",
-          "query" :{
-                    "sort" : [
-                              { "ges_ts": { "order" : "desc"}
-                    }
-                    ],
-          "_source": ["caso_ts_ult_ges", "ges_ts", "ges_resultado", "ges_comentario_sv"],
-          "query": {
-          "bool": {
-            "should": [
-              {
-                "term": {
-                  "caso_S2_id.keyword": uid
-                }
-              }
-            ]
-          }
+  "tx": "FD0",
+  "op": "anyQ",
+  "index": "gdm_journal_0.4",
+  "query": {
+    "sort": [
+      {
+        "ges_ts": {
+          "order": "desc"
         }
       }
-      })
+    ],
+    "_source": [
+      "caso_ts_ult_ges",
+      "ges_ts",
+      "ges_result",
+      "ges_comentario_sv"
+    ],
+    "query": {
+      "bool": {
+        "should": [
+          {
+            "term": {
+              "caso_id.keyword": uid
+            }
+          }
+        ]
+      }
+    }
+  }
+})
 
 
-     fetch("https://bscore.openpartner.cl/gdm", {
+     fetch("https://bs2.openpartner.cl/face", {
                 "method": "POST",
                 "headers": {
                 "content-type": "text/plain"
@@ -90,12 +100,14 @@ class Timelines extends Component {
                 
 
                  hits.forEach(function(key) {
+                  console.log(moment(key._source.caso_ts_ult_ges).format("X"))
                   new_hist[moment(key._source.caso_ts_ult_ges).format("X")] = key;
                   
                 });
 
                 const new_new_hist=[];
                 for (const i in new_hist) {
+                  console.log(new_hist[i])
                   new_new_hist.push(new_hist[i])
 
                 }
@@ -133,10 +145,10 @@ class Timelines extends Component {
          estilo=""
       }
 
-      if(!timeline._source.ges_resultado){
+      if(!timeline._source.ges_result){
         console.log("A "+index)
          // esta es la primera gestion
-         if(this.state.tipoFicha=="telefonia"){
+         if(this.state.tipoFicha=="tel"){
 
          }else if(this.state.tipoFicha=="web"){
            //var str = timeline._source.caso_ts_ult_ges;
@@ -181,7 +193,7 @@ class Timelines extends Component {
                     <div className="marca"><div className="linea"></div></div>
                     <div className="actividad">
                         
-                        <div className="tag">{timeline._source.ges_resultado.replace("_"," ")}</div>
+                        <div className="tag">{timeline._source.ges_result.replace("_"," ")}</div>
                         
                     </div>
                     <div className={"newcoment "+estilo} >
@@ -198,7 +210,7 @@ class Timelines extends Component {
     
     // el return devuelve el conenido <div className="comentario"> {comentario}</div>
 
-    if(this.state.timelinedata.length>0){
+    if(this.state.timelinedata.length>0 && this.state.uniqueid!=""){
       return(
             <div className="lineamanual">
               {timelinedata} 

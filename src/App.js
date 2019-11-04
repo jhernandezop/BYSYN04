@@ -149,6 +149,9 @@ class App extends Component {
   }
 
 
+  
+
+
   actualizarGrupoCandidato=(grupo)=>{
 
     const gruposCandidatos=this.state.gruposCandidatos
@@ -422,7 +425,7 @@ class App extends Component {
 
     //SETEO PARAMETROS DE AGENDA Y FICAS A 0
     this.setState({fichas:[]});
-    this.setState({eventosAgenda:[]});
+    //this.setState({eventosAgenda:[]});
     //VARIABLES A COMPLEMENTAR ENTRE LOS GRUPOS DE FICHA
     let fichas_grupos = []           
     const agrupaciones = []  
@@ -516,57 +519,78 @@ class App extends Component {
                                   console.log(element.caso_estado)
                                   console.log(element.caso_canal)
                                     
-                                  if(element.caso_estado=="agendado"){
+                                  if(element.caso_estado=="agendado"){ 
+                                    
                                     //console.log(element.datos_ficha.fecha_co+"/"+element.datos_ficha.fecha_co.length)
                                           if(element.caso_canal=="web"){
-                                            const fecha = new Date(element.datos_ficha.fecha_co)
+                                            //console.log(variables_sesion.eventosAgenda.find( agendado => agendado.id === element.caso_id ));
+                                            const fecha = new Date(element.caso_fecha_agendada)
                                             agendamientos.push({
-                                                id: element.caso,
-                                                title: element.datos_ficha.cotizacion+"("+element.datos_ficha.nombre+")",
+                                                id: element.caso_id,
+                                                title: element.datos_ficha.doc_nucotizacion+"("+element.datos_ficha.doc_nombre+" "+element.datos_ficha.doc_Ap_paterno+")",
                                                 allDay: false,
                                                 start: fecha,
                                                 end: fecha,
                                             })
 
-                                          }else if(element.caso_canal=="telefonia"){
-                                            const dimencion =element.datos_ficha.fecha_co.length 
-                                            console.log(dimencion); console.log(element.datos_ficha.fecha_co)
-                                            let fecha=""
-                                            if(dimencion==10){
-                                                
-                                                 fecha = new Date(Number(element.datos_ficha.fecha_co)*1000)
-                                            }else if(dimencion==13){
-                                                
-                                                  fecha = new Date(Number(element.datos_ficha.fecha_co))
-                                            }
-                                            console.log(fecha)
-                                            agendamientos.push({
-                                                id: element.caso,
-                                                title: element.caso,
-                                                allDay: false,
-                                                start: fecha,
-                                                end:fecha,
-                                            })
+                                          }else if(element.caso_canal=="tel"){
+                                           const fecha = new Date(element.caso_fecha_agendada)
+                                           
+                                              agendamientos.push({
+                                                  id: element.caso_id,
+                                                  title:  element.caso_id+"("+element.datos_ficha.doc_nu_celular+")",
+                                                  allDay: false,
+                                                  start: fecha,
+                                                  end:fecha,
+                                              })
+                                            
+                                            
                                           }
                                   }
                                   //INSERTO FICHAS A AGRUPACION
-
+                                  
                  
                               })//FIN DE RECCORRIDO DE LA RESPUESTA
-                              
+                              console.log(agendamientos)
                               //ACTUALIZO DATOS EN LOCAL STORAGE
+                              //variables_sesion.eventosAgenda=variables_sesion.eventosAgenda.concat(agendamientos)
+                              if(variables_sesion.eventosAgenda.length>=1){
+                                if(agendamientos.length>=1){
+                                  let existeEnAgenda="no"
+                                  for(const a in agendamientos){
+                                    for(const b in variables_sesion.eventosAgenda){
+                                      if(agendamientos[a].id==variables_sesion.eventosAgenda[b].id){
+                                        existeEnAgenda="si"
+                                      }
+                                    
+                                    }
+                                    if(existeEnAgenda=="no"){
+                                      variables_sesion.eventosAgenda=variables_sesion.eventosAgenda.concat(agendamientos[a])
+                                    }
+                                  }
+                                  
+                                }else{
+                                  variables_sesion.eventosAgenda=variables_sesion.eventosAgenda
+                                }
+                              }else{
+                                variables_sesion.eventosAgenda=agendamientos
+                              }
+                              this.state.eventosAgenda=variables_sesion.eventosAgenda
+                              
+
                               console.log(variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas)
                               variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas=variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas.concat(response.casos)
+                             
                               console.log(variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas)
                               localStorage.setItem("constantes", JSON.stringify(variables_sesion));
                               this.actualizarFichas(variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas, agrupaciones, "");
                               //ACTUALIZO DATOS
-                              this.state.eventosAgenda=this.state.eventosAgenda.concat(agendamientos)
+                              
                               //this.actualizarFichas(data_moment, agrupaciones, "")
                               //this.actualizarFichas(response.casos, agrupaciones, "")
                               resolve("SI")
                       }else{
-                        this.setState({eventosAgenda:[]});
+                        //this.setState({eventosAgenda:[]});
                         this.actualizarFichas([], agrupaciones, "")
                       }
 
@@ -581,7 +605,7 @@ class App extends Component {
                       if( variables_sesion.log_in_out=="out" && total_gruposCandidatos==total_gruposCandidatos_consultados){
                         variables_sesion.log_in_out="in";
                         localStorage.setItem("constantes", JSON.stringify(variables_sesion));
-                        this.pedirFichas();
+                        //this.pedirFichas();
                         return false;
                       }
                     }
@@ -597,61 +621,74 @@ class App extends Component {
     
    
    
-
-    return false;
+//return false;
+    
     // PIDO COLA
     const grupos_anyq = []
     gruposCandidatos.forEach(function(element) {
      
       grupos_anyq.push({
                       "term": {
-                        "caso_grupoCandidato.keyword": element
+                        "caso_grupoC.keyword": element.tag+":"+element.peticion_max
                         }
                       })
 
     })
      console.log(grupos_anyq)
-    var url = 'https://bscore.openpartner.cl/gdm';
+    var url = 'https://bs2.openpartner.cl/face';
     var data = {
-    "tx"    : "anyQ",
-    "index" : "gm_webleads_full_0.3",
-    "query" :{ "size": 0, 
-              "query": {
-                "bool": {
-                  "must": grupos_anyq
-                }
-              },
-              "aggs": {
-                "cotizaciones": {
-                  "filters": {
-                    "filters": {
-                      "En Cola": {
-                        "bool": {
-                          "must": [
-                            {
-                              "query_string": {
-                                "query": "-(caso_face_user:*)"
-                              }
-                            }
-                          ],
-                          "filter": [],
-                          "should": [],
-                          "must_not": []
-                        }
-                      }
-                    }
-                  },
-                  "aggs": {
-                    "unicas": {
-                      "cardinality": {
-                        "field": "caso_S2_id.keyword"
-                      }
+  "tx": "FD0",
+  "op": "anyQ",
+  "index": "gdm_journal_0.4",
+  "query": {
+    "size": 0,
+    "query": {
+      "bool": {
+        "should":  grupos_anyq
+      }
+    },
+    "aggs": {
+      "cotizaciones": {
+        "filters": {
+          "filters": {
+            "En Cola": {
+              "bool": {
+                "must": [
+                  {
+                    "query_string": {
+                      "query": "caso_face_user:none"
                     }
                   }
+                ]
+              }
+            }
+          }
+        },
+        "aggs": {
+          "ultimo_mes": {
+            "date_range": {
+              "field": "caso_tso",
+              "ranges": [
+                {
+                  "from": "now-1M",
+                  "to": "now"
+                }
+              ],
+              "time_zone": "America/Santiago"
+            },
+            "aggs": {
+              "unicas": {
+                "cardinality": {
+                  "field": "caso_id.keyword"
                 }
               }
             }
-            };
+          }
+        }
+      }
+    }
+  }
+};
     fetch(url, {
       method: 'POST', 
       body: JSON.stringify(data),
@@ -664,120 +701,78 @@ class App extends Component {
     .then(response => {
 
       if(response.estatus=="OK" && response.data){
+        console.log(response.data.aggregations.cotizaciones.buckets["En Cola"].ultimo_mes.buckets[0].unicas.value) 
                   //console.log(response.data.aggregations.cotizaciones.buckets["En Cola"].doc_count)
-                  var total=response.data.aggregations.cotizaciones.buckets["En Cola"].unicas.value; 
-                   this.setState({fichasEnCola:total});
+        var total=response.data.aggregations.cotizaciones.buckets["En Cola"].ultimo_mes.buckets[0].unicas.value; 
+        this.setState({fichasEnCola:total});
 
       }
             
-           //console.length(response) 
-            
-
-    })
-    //.catch(error => console.error('Error:', error));
-    //EXITO
-    var data = {
-    "tx"    : "anyQ",
-    "index" : "gm_webleads_full_0.3",
-    "query" :{
-  "query": {
-    "bool": {
-      "must": [
-        {
-          "term": {
-            "ges_user.keyword": this.state.anexo
-          }
-        }
-      ],
-      "should": [
-        {
-          "term": {
-            "ges_resultado.keyword": "agendamiento_propio"
-          }
-        },
-        {
-          "term": {
-            "ges_resultado.keyword": "agendamiento_tercero"
-          }
-        }
-      ],
-      "minimum_should_match": 1
-    }
-  },
-  "aggs": {
-    "unicas": {
-      "cardinality": {
-        "field": "caso_S2_id.keyword"
-      }
-    }
-  }
-}
-}
-fetch(url, {
-      method: 'POST', 
-      body: JSON.stringify(data),
-      "mime.type":"application/json; charset=utf8",  
-      headers:{
-      'Content-Type': 'text/plain'
-      }
-    })
-    .then(res => res.json())
-    .then(response => {
-
-      if(response.estatus=="OK" && response.data){
-                  console.log(response.data.aggregations.unicas.value)
-                  var total=response.data.aggregations.unicas.value
-                   this.setState({fichasExito:total});
-
-      }
-            
-           //console.length(response) 
+           
             
 
     })
 
-//DESCARTADAS
+
+
+    //DESCARTADAS
 var data = {
-    "tx"    : "anyQ",
-    "index" : "gm_webleads_full_0.3",
-    "query" :{
+  "tx": "FD0",
+  "op": "anyQ",
+  "index": "gdm_journal_0.4",
   "query": {
-    "bool": {
-      "must": [
-        {
-          "term": {
-            "ges_user.keyword": this.state.anexo
+    "size": 0,
+    "query": {
+      "bool": {
+        "must": [
+          {
+            "term": {
+              "ges_user.keyword": this.state.anexo
+            }
+          }
+        ],
+        "should": [
+          {
+            "term": {
+              "ges_result.keyword": "sin_interes"
+            }
+          },
+          {
+            "term": {
+              "ges_result.keyword": "datos_erroneos"
+            }
+          },
+          {
+            "term": {
+              "ges_result.keyword": "cerradoSinVenta"
+            }
+          }
+        ],
+        "minimum_should_match": 1
+      }
+    },
+    "aggs": {
+      "ultimo_mes": {
+        "date_range": {
+          "field": "ges_ts",
+          "ranges": [
+            {
+              "from": "now-1M",
+              "to": "now"
+            }
+          ],
+          "time_zone": "America/Santiago"
+        },
+        "aggs": {
+          "unicas": {
+            "cardinality": {
+              "field": "caso_id.keyword"
+            }
           }
         }
-      ],
-      "should": [
-        {
-          "term": {
-            "ges_resultado.keyword": "sin_interes"
-          }
-        },
-        {
-          "term": {
-            "ges_resultado.keyword": "datos_erroneos"
-          }
-        },
-        {
-          "term": {
-            "ges_resultado.keyword": "cerrado_sin_venta"
-          }
-        }
-      ],
-      "minimum_should_match": 1
-    }
-  },
-  "aggs": {
-    "unicas": {
-      "cardinality": {
-        "field": "caso_S2_id.keyword"
       }
     }
   }
-}
 }
 
 
@@ -793,8 +788,8 @@ fetch(url, {
     .then(response => {
 
       if(response.estatus=="OK" && response.data){
-                  console.log(response.data.aggregations.unicas.value)
-                  var total=response.data.aggregations.unicas.value
+                  console.log(response.data.aggregations.ultimo_mes.buckets[0].unicas.value)
+                  var total=response.data.aggregations.ultimo_mes.buckets[0].unicas.value
                    this.setState({fichasDescartadas:total});
 
       }
@@ -807,6 +802,83 @@ fetch(url, {
 
 
 }
+
+
+    //return false;
+    //.catch(error => console.error('Error:', error));
+    //EXITO
+    var data = {
+    "tx": "FD0",
+    "op": "anyQ",
+    "index": "gdm_journal_0.4",
+    "query" :{
+        "size":0,
+    "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "ges_user.keyword": this.state.anexo
+          }
+        }
+      ],
+      "should": [
+        {
+          "term": {
+            "ges_result.keyword": "cerradoconVenta"
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  },
+  "aggs": {
+          "ultimo_mes": {
+            "date_range": {
+              "field": "ges_ts",
+              "ranges": [
+                {
+                  "from": "now-1M",
+                  "to": "now"
+                }
+              ],
+              "time_zone": "America/Santiago"
+            },
+            "aggs": {
+              "unicas": {
+                "cardinality": {
+                  "field": "caso_id.keyword"
+                }
+              }
+            }
+          }
+    }
+        }
+}
+fetch(url, {
+      method: 'POST', 
+      body: JSON.stringify(data),
+      "mime.type":"application/json; charset=utf8",  
+      headers:{
+      'Content-Type': 'text/plain'
+      }
+    })
+    .then(res => res.json())
+    .then(response => {
+
+      if(response.estatus=="OK" && response.data){
+                  console.log(response.data.aggregations.ultimo_mes.buckets[0].unicas.value)
+                  var total=response.data.aggregations.ultimo_mes.buckets[0].unicas.value
+                   this.setState({fichasExito:total});
+
+      }
+            
+           //console.length(response) 
+            
+
+    })
+
+
 
 
 
@@ -1048,6 +1120,7 @@ fetch(url, {
     this.setState({procesomanual:procesomanual})
     console.log(this.state.procesomanual)
     //this.pedirNuevas();
+
     //FILTRO CON GRUPO CANDIDATO
       this.contarFichaGc()
     
@@ -1161,7 +1234,10 @@ fetch(url, {
             element_a.datos_ficha.caso_TaskId=datos_de_una_ficha_editada.caso_TaskId
             
             element_a.datos_ficha.caso_gestiones=datos_de_una_ficha_editada.caso_gestiones
+
           }
+
+          
 
           if(ficha_selecionada==element_a.caso_id && estado_caso_new!="finGestion"){
             fichas_restantes.push(element_a)
@@ -1209,11 +1285,38 @@ fetch(url, {
             fichas_restantes.push(variables_sesion.gruposCandidatos[i].fichas[b])
           }
 
+          //SI ES UNA AGENDADA
+          if(estado_caso_new=="agendado" && ficha_selecionada==variables_sesion.gruposCandidatos[i].fichas[b].caso_id){
+            console.log(variables_sesion.eventosAgenda)
+
+            let existeEnAgenda="no"
+            for(const i in variables_sesion.eventosAgenda){
+              if(variables_sesion.eventosAgenda[i].id==ficha_selecionada){
+                  variables_sesion.eventosAgenda[i].start=datos_de_una_ficha_editada.ges_fecha_agendamiento;
+                  variables_sesion.eventosAgenda[i].end=datos_de_una_ficha_editada.ges_fecha_agendamiento;
+                  existeEnAgenda="si"
+              }
+            }
+
+            if(existeEnAgenda=="no"){
+
+              variables_sesion.eventosAgenda.push({
+                                                  id: ficha_selecionada,
+                                                  title: variables_sesion.gruposCandidatos[i].fichas[b].datos_ficha.doc_nucotizacion+"("+variables_sesion.gruposCandidatos[i].fichas[b].datos_ficha.doc_nombre+" "+variables_sesion.gruposCandidatos[i].fichas[b].datos_ficha.doc_Ap_paterno+")",
+                                                  allDay: false,
+                                                  start: datos_de_una_ficha_editada.ges_fecha_agendamiento,
+                                                  end: datos_de_una_ficha_editada.ges_fecha_agendamiento,
+                                              })
+            }
+            console.log(variables_sesion.eventosAgenda)
+          }
+
         }
         variables_sesion.gruposCandidatos[i].fichas=fichas_restantes
 
       }
-
+       this.setState({eventosAgenda:variables_sesion.eventosAgenda});
+     
       localStorage.setItem("constantes", JSON.stringify(variables_sesion))
       
       
@@ -1226,6 +1329,10 @@ fetch(url, {
 
   filtroFichas=(filtro)=>{
     console.log(filtro)
+    if(filtro=="nuevo"){
+      this.pedirFichasNuevas();
+    }
+   
 
 //return false;
     //procesomanualFiltro
@@ -1359,11 +1466,13 @@ fetch(url, {
         variables_sesion.clave = ""
         variables_sesion.log_in_out="out"
         variables_sesion.gruposCandidatos = {}
+        variables_sesion.eventosAgenda=[]
         localStorage.setItem("constantes", JSON.stringify(variables_sesion))
       }
       this.setState({estadoLogin:false})
       this.setState({interfaz:""})
       this.setState({edicion:""})
+      this.setState({eventosAgenda:[]})
       this.setState({opcionesOsuario:[
                         {
                           opcion:"fab fa-trello", 

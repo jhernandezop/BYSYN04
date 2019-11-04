@@ -115,7 +115,7 @@ class Agenda extends Component {
 
 	 if (title){
 	     let idList = this.state.events.map(a => a.id)
-	     let newId = Math.max(...idList) + 1
+	     let newId = Math.max(...idList) 
 	     let hour = {
 	       id: newId,
 	       title: title,
@@ -313,15 +313,15 @@ enviarGestionAgenda = (event) => {
                             "caso_instance":this.props.edicion[0].ficha.datos_ficha.caso_instance
                         },
                         //"gestion_data":items_gestion_data,
-                        //"doc_data":items_doc_data
+                        "doc_data":items_gestion_data,
                          "gestion_data":
                                       {
-                                        "ges_result" : "agendamiento_propio"/**/,
-                                        "tip_2agente" : "",
-                                        "tip_2piso"   : "",
-                                        "follow_date" : items_doc_data.follow_date,
-                                        "folow_time"  : items_doc_data.folow_time,
-                                        "follow_type" : ""
+                                      	"ges_result" : "agendamiento_propio",
+                                        "ges_comentario_sv":event.data.comentarios,
+                                        "ges_fecha_agendamiento": items_doc_data.follow_date,
+                                        "ges_hora_agendamiento":items_doc_data.folow_time,
+                                        "ges_ts":moment().format("x"),
+                                        "ges_user":this.props.anexo
                                       }
                         }
    
@@ -355,9 +355,14 @@ enviarGestionAgenda = (event) => {
                              //this.props.desplegarEdicion("limpiar","","", "")
 
                              if(response.estatus=="OK"){
+                             	response.task_data["ges_fecha_agendamiento"]= items_doc_data.follow_date;
+                             	response.task_data["ges_hora_agendamiento"]= items_doc_data.folow_time;
+                             	console.log(response.task_data)
 								this.props.desplegarEdicion("atualizar_una_ficha","",this.props.edicion[0].ficha, "", response.task_data)
                               	this.setState({expandida:false});
                               	this.setState({tipificando:false});
+
+
                              }
                               
 

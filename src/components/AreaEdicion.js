@@ -300,6 +300,11 @@ class AreaEdicion extends Component {
                         "gestion_data":
                                       {
                                         "ges_result" : event.data.select,
+                                        "ges_comentario_sv":event.data.comentarios,
+                                        "ges_fecha_agendamiento":"",
+                                        "ges_hora_agendamiento":"",
+                                        "ges_ts":moment().format("x"),
+                                        "ges_user":this.props.anexo
                                         
                                       }
                         }

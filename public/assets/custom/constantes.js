@@ -12,7 +12,8 @@ if(localStorage.getItem("constantes")){
 		usuario:"",
 		clave:"",
 		gruposCandidatos:{},
-		log_in_out:"out"
+		log_in_out:"out",
+		eventosAgenda:[]
 
 	
 	
