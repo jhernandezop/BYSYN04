@@ -53,6 +53,7 @@ button.rbc-input::-moz-focus-inner {
   background: #e6e6e6; }
 
 .rbc-header {
+  
   overflow: hidden;
   flex: 1 0 0%;
   text-overflow: ellipsis;
@@ -649,6 +650,8 @@ button.rbc-input::-moz-focus-inner {
 #Agenda a{
       color: #ffffff !important;
 }
+
+#Agenda .rbc-header a{color: #000 !important;}
 
 #Agenda .agendamiento{
     background: #ffffffd6;

@@ -34,6 +34,12 @@ class Agenda extends Component {
 	componentDidMount(nextProps) {
 
 		const events = this.props.eventosAgenda
+
+		for(const i in events){
+			events[i].start=new Date(events[i].start)
+			events[i].end=new Date(events[i].end)
+
+		}
 		this.state.events=events
 
 	   	console.log(this.props)
@@ -151,10 +157,11 @@ class Agenda extends Component {
 		//seguimiento_agenda.components[0].components[2].columns[0].components[1].datePicker.initDate=moment(start).format("YYYY-MM-DD HH:MM a");
 	   	//seguimiento_agenda.components[0].components[1].defaultValue=moment(start).format("YYYY-MM-DD HH:MM a");
 	   	seguimiento_agenda.components[0].components[2].defaultValue=moment(start).format("YYYY-MM-DD HH:MM a");
-	   	seguimiento_agenda.components[0].legend="Agendando el: "+moment(start).format("YYYY-MM-DD HH:MM a");
+	   	seguimiento_agenda.components[0].legend="Agendando el: "+moment(start).subtract(10, 'minutes').format("YYYY-MM-DD HH:MM a");
 
 	   	seguimientoAgendaServicioTecnico.components[0].components[2].defaultValue=moment(start).format("YYYY-MM-DD HH:MM a");
 	   	seguimientoAgendaServicioTecnico.components[0].legend="Agendando el: "+moment(start).format("YYYY-MM-DD HH:MM a");
+	   	//seguimientoAgendaServicioTecnico.components[0].legend="Agendando el: "+moment(start)
 	   	//console.log(seguimiento_agenda.components[0])
 	   	//console.log(seguimiento_agenda.components[0].components[3].columns[0].components[0].data)
 	   	//console.log(seguimiento_agenda.components[0].components[2].columns[0].components[1])

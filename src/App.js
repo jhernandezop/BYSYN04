@@ -524,7 +524,9 @@ class App extends Component {
                                     //console.log(element.datos_ficha.fecha_co+"/"+element.datos_ficha.fecha_co.length)
                                           if(element.caso_canal=="web"){
                                             //console.log(variables_sesion.eventosAgenda.find( agendado => agendado.id === element.caso_id ));
-                                            const fecha = new Date(element.caso_fecha_agendada)
+                                           console.log(element.caso_fecha_agendada+"T"+element.caso_hora_agendada.slice(0, 5))
+                                            const newFecha=element.caso_fecha_agendada+"T"+element.caso_hora_agendada.slice(0, 5)
+                                           const fecha = new Date(newFecha)
                                             agendamientos.push({
                                                 id: element.caso_id,
                                                 title: element.datos_ficha.doc_nucotizacion+"("+element.datos_ficha.doc_nombre+" "+element.datos_ficha.doc_Ap_paterno+")",
@@ -534,7 +536,9 @@ class App extends Component {
                                             })
 
                                           }else if(element.caso_canal=="tel"){
-                                           const fecha = new Date(element.caso_fecha_agendada)
+                                            console.log(element.caso_fecha_agendada+"T"+element.caso_hora_agendada.slice(0, 5))
+                                            const newFecha=element.caso_fecha_agendada+"T"+element.caso_hora_agendada.slice(0, 5)
+                                           const fecha = new Date(newFecha)
                                            
                                               agendamientos.push({
                                                   id: element.caso_id,
@@ -581,7 +585,7 @@ class App extends Component {
                               console.log(variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas)
                               variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas=variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas.concat(response.casos)
                              
-                              console.log(variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas)
+                              console.log(variables_sesion)
                               localStorage.setItem("constantes", JSON.stringify(variables_sesion));
                               this.actualizarFichas(variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas, agrupaciones, "");
                               //ACTUALIZO DATOS
@@ -1215,7 +1219,7 @@ fetch(url, {
         estado_caso_new="en gestion";
       }else if(estado_caso=="seguimiento"){
         estado_caso_new="en gestion";
-      }else if( estado_caso=="agendado_propio"){
+      }else if( estado_caso=="agendado_propio" || estado_caso=="agendado"){
         estado_caso_new="agendado";
       }else if( estado_caso=="finGestion"){
         estado_caso_new="finGestion";
@@ -1289,23 +1293,34 @@ fetch(url, {
           if(estado_caso_new=="agendado" && ficha_selecionada==variables_sesion.gruposCandidatos[i].fichas[b].caso_id){
             console.log(variables_sesion.eventosAgenda)
 
+           
+            const newFecha=new Date(datos_de_una_ficha_editada.ges_fecha_agendamiento+"T"+datos_de_una_ficha_editada.ges_hora_agendamiento.slice(0, 5))
+            
+
             let existeEnAgenda="no"
             for(const i in variables_sesion.eventosAgenda){
               if(variables_sesion.eventosAgenda[i].id==ficha_selecionada){
-                  variables_sesion.eventosAgenda[i].start=datos_de_una_ficha_editada.ges_fecha_agendamiento;
-                  variables_sesion.eventosAgenda[i].end=datos_de_una_ficha_editada.ges_fecha_agendamiento;
+                  variables_sesion.eventosAgenda[i].start=newFecha;
+                  variables_sesion.eventosAgenda[i].end=newFecha;
                   existeEnAgenda="si"
               }
             }
 
             if(existeEnAgenda=="no"){
 
+              let titulo=""
+              if(variables_sesion.gruposCandidatos[i].fichas[b].caso_canal=="web"){
+                titulo=variables_sesion.gruposCandidatos[i].fichas[b].datos_ficha.doc_nucotizacion+"("+variables_sesion.gruposCandidatos[i].fichas[b].datos_ficha.doc_nombre+" "+variables_sesion.gruposCandidatos[i].fichas[b].datos_ficha.doc_Ap_paterno+")";                                 
+              }else{
+                titulo=variables_sesion.gruposCandidatos[i].fichas[b].caso_id+"("+variables_sesion.gruposCandidatos[i].fichas[b].datos_ficha.doc_nu_celular+")";
+              }
+
               variables_sesion.eventosAgenda.push({
                                                   id: ficha_selecionada,
-                                                  title: variables_sesion.gruposCandidatos[i].fichas[b].datos_ficha.doc_nucotizacion+"("+variables_sesion.gruposCandidatos[i].fichas[b].datos_ficha.doc_nombre+" "+variables_sesion.gruposCandidatos[i].fichas[b].datos_ficha.doc_Ap_paterno+")",
+                                                  title: titulo,
                                                   allDay: false,
-                                                  start: datos_de_una_ficha_editada.ges_fecha_agendamiento,
-                                                  end: datos_de_una_ficha_editada.ges_fecha_agendamiento,
+                                                  start: newFecha,
+                                                  end: newFecha,
                                               })
             }
             console.log(variables_sesion.eventosAgenda)
