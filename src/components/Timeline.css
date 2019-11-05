@@ -135,7 +135,8 @@
 
 
 .actividad > div{
-    display: inline-flex;;
+    display: inline-flex;
+    max-width: 90px;
 
 }
 .comentario{

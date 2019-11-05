@@ -179,7 +179,7 @@ class AreaEdicion extends Component {
     }else if(text=="detalleLLamada"){
         if(this.state.ficha_canal=="web") {
             this.setState({formulario:"detalleLLamada"});
-        }else if(this.state.ficha_canal=="telefonia"){
+        }else if(this.state.ficha_canal=="tel"){
             this.setState({formulario:"detalletelefonia"});
         }
         

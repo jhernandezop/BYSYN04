@@ -188,7 +188,7 @@ class Agenda extends Component {
       
 
           
-          var url = 'https://bscore.openpartner.cl/gdm';
+          /*var url = 'https://bscore.openpartner.cl/gdm';
           var data = {
                       "tx": "doc0",
                       "ts_o": moment().format('YYYY-MM-DDTHH:mm:ss'),
@@ -202,6 +202,16 @@ class Agenda extends Component {
                         "campania": "",
                         "estado": ""
                       }
+                    };*/
+            var url = 'https://bs2.openpartner.cl/face';
+            var data = {
+                        "tx"        : "FD0",
+                        "tx_version": "0.1",
+                        "op"        : "doc0",
+                        "destino"   : "test",
+                        "doc_data"  :{
+                            "caso_id"   : pEvent.id
+                        }
                     };
             fetch(url, {
               method: 'POST', 

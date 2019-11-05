@@ -623,10 +623,20 @@ class App extends Component {
     //SETEO A IN LA SESION
     this.pedirNuevas();
     
-   
-   
-//return false;
+
+
+}
+
+this.llamarIndicadores();
     
+}
+
+  
+llamarIndicadores=()=>{  
+//return false;
+    const gruposCandidatos=this.state.gruposCandidatos
+    var url = 'https://bs2.openpartner.cl/face';
+
     // PIDO COLA
     const grupos_anyq = []
     gruposCandidatos.forEach(function(element) {
@@ -717,70 +727,66 @@ class App extends Component {
 
     })
 
-
-
     //DESCARTADAS
-var data = {
-  "tx": "FD0",
-  "op": "anyQ",
-  "index": "gdm_journal_0.4",
-  "query": {
-    "size": 0,
-    "query": {
-      "bool": {
-        "must": [
-          {
-            "term": {
-              "ges_user.keyword": this.state.anexo
-            }
+    var data = {
+      "tx": "FD0",
+      "op": "anyQ",
+      "index": "gdm_journal_0.4",
+      "query": {
+        "size": 0,
+        "query": {
+          "bool": {
+            "must": [
+              {
+                "term": {
+                  "ges_user.keyword": this.state.anexo
+                }
+              }
+            ],
+            "should": [
+              {
+                "term": {
+                  "ges_result.keyword": "sin_interes"
+                }
+              },
+              {
+                "term": {
+                  "ges_result.keyword": "datos_erroneos"
+                }
+              },
+              {
+                "term": {
+                  "ges_result.keyword": "cerradoSinVenta"
+                }
+              }
+            ],
+            "minimum_should_match": 1
           }
-        ],
-        "should": [
-          {
-            "term": {
-              "ges_result.keyword": "sin_interes"
-            }
-          },
-          {
-            "term": {
-              "ges_result.keyword": "datos_erroneos"
-            }
-          },
-          {
-            "term": {
-              "ges_result.keyword": "cerradoSinVenta"
-            }
-          }
-        ],
-        "minimum_should_match": 1
-      }
-    },
-    "aggs": {
-      "ultimo_mes": {
-        "date_range": {
-          "field": "ges_ts",
-          "ranges": [
-            {
-              "from": "now-1M",
-              "to": "now"
-            }
-          ],
-          "time_zone": "America/Santiago"
         },
         "aggs": {
-          "unicas": {
-            "cardinality": {
-              "field": "caso_id.keyword"
+          "ultimo_mes": {
+            "date_range": {
+              "field": "ges_ts",
+              "ranges": [
+                {
+                  "from": "now-1M",
+                  "to": "now"
+                }
+              ],
+              "time_zone": "America/Santiago"
+            },
+            "aggs": {
+              "unicas": {
+                "cardinality": {
+                  "field": "caso_id.keyword"
+                }
+              }
             }
           }
         }
       }
     }
-  }
-}
-
-
-fetch(url, {
+    fetch(url, {
       method: 'POST', 
       body: JSON.stringify(data),
       "mime.type":"application/json; charset=utf8",  
@@ -803,13 +809,6 @@ fetch(url, {
 
     })
 
-
-
-}
-
-
-    //return false;
-    //.catch(error => console.error('Error:', error));
     //EXITO
     var data = {
     "tx": "FD0",
@@ -882,27 +881,8 @@ fetch(url, {
 
     })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
   }
+
 
   pedirEjecutivos=()=>{
 
@@ -1199,6 +1179,47 @@ fetch(url, {
       })
       this.setState({fichas:fichas_actuales})
      
+   }else if(accion=="cargar_ficha_agenda"){
+
+      this.actualizarUniqueid(ficha)
+      console.log(ficha)
+      const id_ficha_selecionada = ficha
+      const fichas_actuales=this.state.fichas 
+      let fichaSelecionada = {}
+      fichas_actuales.forEach(function(element_a, index_a) {
+
+        if(element_a.caso_id==id_ficha_selecionada){
+          element_a.selcionada=true;
+          
+          fichaSelecionada={
+            canal:element_a.caso_canal,
+            anexo:element_a.caso_face_user,
+            acciones: element_a.acciones,
+            caso_CAM: element_a.caso_TaskId,
+            caso_ES: id_ficha_selecionada,
+            datos_ficha: element_a,
+            estado_proceso: element_a.caso_estado,
+            nro_gestion: element_a.caso_gestiones,
+            timeline: element_a.timeline,
+            tipo_caso:element_a.caso_tipo,
+            tipificacion:"",
+            selcionada:true,
+            gc:element_a.gruposCandidatos
+          }
+          //fichaSelecionada["caso_ES"]=id_ficha_selecionada;
+          //this.setState({edicion:[{"ficha": element_a, "datosFormulario":datosFormulario}]});
+          
+        }else{
+          element_a.selcionada=false
+        }
+        
+
+      })
+      console.log(fichaSelecionada)
+      this.setState({edicion:[{"ficha": fichaSelecionada, "datosFormulario":datosFormulario}]});
+      this.setState({fichas:fichas_actuales})
+
+      
    }else if(accion=="atualizar_una_ficha"){
       //console.log(ficha)
       
@@ -1337,7 +1358,7 @@ fetch(url, {
       
      
    }
-
+   this.llamarIndicadores();
 
   }
 

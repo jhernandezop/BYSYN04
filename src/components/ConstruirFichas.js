@@ -319,7 +319,7 @@ class UnaFichaTelefonia extends Component {
               <div className="card-body telefono">
                 <button type="button" onClick={() => this.llamarCliente(detalle.datos_ficha.doc_nu_celular)} className="btn btn-light">
                     <i className="fas fa-headset"></i> {detalle.datos_ficha.doc_nu_celular}
-                    <span className="nro_gestion badge badge-pill badge-light">{detalle.datos_ficha.caso_gestiones}</span>
+                    <span className="nro_gestion badge badge-pill badge-light">{this.state.nro_gestion}</span>
                 </button>
 
               </div>
@@ -536,7 +536,7 @@ class UnaFichaCotizacionWeb extends Component {
               <div className="card-body telefono">
                 <button type="button" onClick={() => this.llamarCliente(detalle.datos_ficha.doc_nu_celular !="" ? detalle.datos_ficha.doc_nu_celular : detalle.datos_ficha.doc_nu_telefono)} className="btn btn-light">
                     <i className="fas fa-headset"></i> {detalle.datos_ficha.doc_nu_celular !="" ? detalle.datos_ficha.doc_nu_celular : detalle.datos_ficha.doc_nu_telefono}
-                    <span className="nro_gestion badge badge-pill badge-light">{detalle.datos_ficha.caso_gestiones}</span>
+                    <span className="nro_gestion badge badge-pill badge-light">{this.state.nro_gestion}</span>
                 </button>
 
               </div>
