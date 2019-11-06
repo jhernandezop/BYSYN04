@@ -268,9 +268,19 @@ class App extends Component {
 
     for(const i in gruposCandidatos){
         console.log(gruposCandidatos[i]);
-        const cant_peticion=gruposCandidatos[i].peticion_max-variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas.length;
+        //PETICION SIN CONSIDERAR ESTADO DEL PROCESO
+        //const cant_peticion=gruposCandidatos[i].peticion_max-variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas.length;
         //SI TENGO = NO BUSCO NADA
-        
+        console.log(variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas)
+        const elGrupo=variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas
+        let nuevasEncontradas=0
+        for(const b in elGrupo){
+         console.log(elGrupo[b].caso_estado)
+         if(elGrupo[b].caso_estado=="nuevo" || elGrupo[b].caso_estado=="Asignado"){
+            nuevasEncontradas++
+         }
+        }
+        const cant_peticion=gruposCandidatos[i].peticion_max-nuevasEncontradas;
         if(cant_peticion==0){
           //this.actualizarFichas(variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas, agrupaciones, "");
           //console.log("NO PIDO "+gruposCandidatos[i].tag)
@@ -282,7 +292,7 @@ class App extends Component {
         
                 //CREO LAS AGRUPACIONES
                 //agrupaciones.push(gruposCandidatos[i])
-                var url = 'https://bs2.openpartner.cl/face';
+                var url = 'https://bs2.openpartner.cl/face?auto';
                 var data = {
                               "tx"        : "FI0",
                               "tx_version": "0.1",
@@ -401,12 +411,15 @@ class App extends Component {
       this.setState({procesomanual:setear_proceso}) 
     //DETERMINAR NUEVA PETICION O FIHAS GESTIONADAS
     let ciclo=""
+    let cantidadAdicional=0
     const variables_sesion= JSON.parse(localStorage.getItem("constantes"));
     console.log(variables_sesion.log_in_out)
     if(variables_sesion.log_in_out=="out" ){
       ciclo="gu0" //con gestion
+      cantidadAdicional=300;
     }else{
       ciclo="gf0"; //nuevas
+      cantidadAdicional=0
     }
     // PIDO FICHASSS
     //return false;
@@ -434,23 +447,40 @@ class App extends Component {
     const total_gruposCandidatos=gruposCandidatos.length
     let total_gruposCandidatos_consultados=0
     
+     //ciclo="gu0" //con gestion 1er
+     //ciclo="gf0"; //nuevas 2do
     for(const i in gruposCandidatos){
         console.log(gruposCandidatos[i]);
-        const cant_peticion=gruposCandidatos[i].peticion_max-variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas.length;
+        //const cant_peticion=gruposCandidatos[i].peticion_max-variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas.length;
         //SI TENGO = NO BUSCO NADA
+        console.log(variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas)
+        const elGrupo=variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas
+        let nuevasEncontradas=0
+        for(const b in elGrupo){
+         console.log(elGrupo[b].caso_estado)
+         if(elGrupo[b].caso_estado=="nuevo" || elGrupo[b].caso_estado=="Asignado" && ciclo=="gf0"){
+            nuevasEncontradas++
+         }else{}
+        }
+
+        const cant_peticion=gruposCandidatos[i].peticion_max-nuevasEncontradas;
+       
         
-        if(cant_peticion==0){
-          this.actualizarFichas(variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas, agrupaciones, "");
+        if(cant_peticion<=0 ){
+          this.actualizarFichas(variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas, agrupaciones, "","X");
           console.log("NO PIDO "+gruposCandidatos[i].tag)
          
           //return false;
         }else if(cant_peticion>0){
+
+         /**/ 
           
           console.log("PIDO "+gruposCandidatos[i].tag)
         
                 //CREO LAS AGRUPACIONES
                 //agrupaciones.push(gruposCandidatos[i])
-                var url = 'https://bs2.openpartner.cl/face';
+                const totalPedir=cant_peticion+cantidadAdicional
+                var url = 'https://bs2.openpartner.cl/face?'+ciclo;
                 var data = {
                               "tx"        : "FI0",
                               "tx_version": "0.1",
@@ -459,8 +489,8 @@ class App extends Component {
                               "destino"   : "test",
                               "instsReq": {
                                   "face_user" : this.state.anexo,
-                                  "face_group": gruposCandidatos[i].tag+":"+gruposCandidatos[i].peticion_max,
-                                  "quantity"  : cant_peticion,
+                                  "face_group": gruposCandidatos[i].tag+":5",
+                                  "quantity"  : totalPedir,
                                   "step"      : "nuevo",
                                   "backLimit" : moment().format('YYYY-MM-DDTHH:mm:ss'),
                                   "sorted"    : "desc"
@@ -587,7 +617,7 @@ class App extends Component {
                              
                               console.log(variables_sesion)
                               localStorage.setItem("constantes", JSON.stringify(variables_sesion));
-                              this.actualizarFichas(variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas, agrupaciones, "");
+                              this.actualizarFichas(variables_sesion.gruposCandidatos[gruposCandidatos[i].tag].fichas, agrupaciones, "",ciclo);
                               //ACTUALIZO DATOS
                               
                               //this.actualizarFichas(data_moment, agrupaciones, "")
@@ -609,7 +639,7 @@ class App extends Component {
                       if( variables_sesion.log_in_out=="out" && total_gruposCandidatos==total_gruposCandidatos_consultados){
                         variables_sesion.log_in_out="in";
                         localStorage.setItem("constantes", JSON.stringify(variables_sesion));
-                        //this.pedirFichas();
+                        this.pedirFichas();
                         return false;
                       }
                     }
@@ -1040,9 +1070,9 @@ fetch(url, {
 
   }
 
-  actualizarFichas=(fichas, grupos, overlays)=> {
+  actualizarFichas=(fichas, grupos, overlays, ciclo)=> {
    console.log(fichas)
-   console.log(grupos)
+   console.log(ciclo)
    
    const newfichas=this.state.fichas.concat(fichas)
    console.log(newfichas)
@@ -1219,6 +1249,7 @@ fetch(url, {
       this.setState({edicion:[{"ficha": fichaSelecionada, "datosFormulario":datosFormulario}]});
       this.setState({fichas:fichas_actuales})
 
+
       
    }else if(accion=="atualizar_una_ficha"){
       //console.log(ficha)
@@ -1258,7 +1289,9 @@ fetch(url, {
             element_a.caso_TaskId=datos_de_una_ficha_editada.caso_TaskId
             element_a.datos_ficha.caso_TaskId=datos_de_una_ficha_editada.caso_TaskId
             
-            element_a.datos_ficha.caso_gestiones=datos_de_una_ficha_editada.caso_gestiones
+            element_a.datos_ficha.caso_gestiones=datos_de_una_ficha_editada.caso_gestiones;
+            element_a.key_orden=moment(datos_de_una_ficha_editada.caso_ts_ult_ges).format("X");
+            
 
           }
 
@@ -1300,7 +1333,9 @@ fetch(url, {
             variables_sesion.gruposCandidatos[i].fichas[b].caso_TaskId=datos_de_una_ficha_editada.caso_TaskId
             variables_sesion.gruposCandidatos[i].fichas[b].datos_ficha.caso_TaskId=datos_de_una_ficha_editada.caso_TaskId
             
-            variables_sesion.gruposCandidatos[i].fichas[b].datos_ficha.caso_gestiones=datos_de_una_ficha_editada.caso_gestiones
+            variables_sesion.gruposCandidatos[i].fichas[b].datos_ficha.caso_gestiones=datos_de_una_ficha_editada.caso_gestiones;
+            variables_sesion.gruposCandidatos[i].fichas[b].key_orden=moment(datos_de_una_ficha_editada.caso_ts_ult_ges).format("X");
+            
           }
 
           if(ficha_selecionada==variables_sesion.gruposCandidatos[i].fichas[b].caso_id && estado_caso_new!="finGestion"){
@@ -1354,7 +1389,7 @@ fetch(url, {
        this.setState({eventosAgenda:variables_sesion.eventosAgenda});
      
       localStorage.setItem("constantes", JSON.stringify(variables_sesion))
-      
+      this.pedirFichasNuevas();
       
      
    }
