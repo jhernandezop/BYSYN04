@@ -160,7 +160,7 @@ class UnaFichaTelefonia extends Component {
       }else{
           this.props.peticionDetalle()
           this.props.desplegarEdicion("buscar","",this.state);
-          var url = 'https://bs2.openpartner.cl/face';
+          var url = 'https://bs2.openpartner.cl/face?doc0';
 
           
           var data = {
@@ -380,7 +380,7 @@ class UnaFichaCotizacionWeb extends Component {
       }else{
           this.props.peticionDetalle()
           this.props.desplegarEdicion("buscar","",this.state);
-          var url = 'https://bs2.openpartner.cl/face';
+          var url = 'https://bs2.openpartner.cl/face?doc0';
           var data = {
                         "tx"        : "FD0",
                         "tx_version": "0.1",

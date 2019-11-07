@@ -1248,7 +1248,7 @@ fetch(url, {
       console.log(fichaSelecionada)
       this.setState({edicion:[{"ficha": fichaSelecionada, "datosFormulario":datosFormulario}]});
       this.setState({fichas:fichas_actuales})
-
+      this.llamarIndicadores();
 
       
    }else if(accion=="atualizar_una_ficha"){
@@ -1390,10 +1390,11 @@ fetch(url, {
      
       localStorage.setItem("constantes", JSON.stringify(variables_sesion))
       this.pedirFichasNuevas();
+      this.llamarIndicadores();
       
      
    }
-   this.llamarIndicadores();
+   //this.llamarIndicadores();
 
   }
 
