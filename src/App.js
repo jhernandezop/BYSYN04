@@ -61,7 +61,7 @@ class App extends Component {
                         },
                         {
                           opcion:"fas fa-chart-line", 
-                          funcion:"reporte",
+                          funcion:"reportes_usuario",
                           ver: false
                         },
                         
@@ -1033,7 +1033,7 @@ fetch(url, {
       this.pedirEjecutivos();
 
     }
-
+    
     if(data.anexo!=""){
       this.setState({interfaz:(data.permisos[0].tag=="face" ? 'gestion' : data.permisos[0].tag)});
     }else if(data.anexo==""){
@@ -1042,8 +1042,10 @@ fetch(url, {
 
     const opcionesActuales=this.state.opcionesOsuario
     data.permisos.forEach(function(element_a, index_a) {
+      
       console.log(element_a)
       console.log(opcionesActuales)
+      
       if(element_a.tag=="reportes_supervisor"){
           opcionesActuales[3].ver=true
           
@@ -1154,7 +1156,7 @@ fetch(url, {
 
 
   desplegarEdicion=(accion, datosFormulario, ficha, data_editada, datos_de_una_ficha_editada) => {
-    //console.log(datosFormulario)
+    
     console.log(data_editada)
     if(accion=="limpiar" || accion==""){
       this.setState({edicion:[]});
@@ -1165,11 +1167,12 @@ fetch(url, {
       })
       this.setState({fichas:fichas_actuales})
     }else if(accion=="cargar"){
-
+      console.log(datosFormulario)
+      console.log(ficha)
       this.setState({edicion:[{"ficha": ficha, "datosFormulario":datosFormulario, "data_editada":false}]});
     
 
-      console.log(ficha)
+      
       const ficha_selecionada = ficha.caso_ES
       const fichas_actuales=this.state.fichas 
       fichas_actuales.forEach(function(element_a, index_a) {
@@ -1568,7 +1571,7 @@ fetch(url, {
                         },
                         {
                           opcion:"fas fa-chart-line", 
-                          funcion:"reporte",
+                          funcion:"reportes_usuario",
                           ver: false
                         },
                         {
@@ -1786,7 +1789,7 @@ fetch(url, {
             </div>
           </div>
         );
-    }else if(this.state.estadoLogin==true &&  this.state.interfaz=="reporte"){
+    }else if(this.state.estadoLogin==true &&  this.state.interfaz=="reportes_usuario"){
       return (
         <div className="container-fluid h-100">
           <div className="row">
