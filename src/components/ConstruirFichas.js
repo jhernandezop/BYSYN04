@@ -179,7 +179,9 @@ class UnaFichaTelefonia extends Component {
               'Content-Type': 'text/plain'
               }
             })
-            .then(res => res.json())
+            .then(res => res.json(
+                this.props.desplegarEdicion("cargando", "", "")
+            ))
             .then(response => {
                             this.props.peticionDetalle()
                             console.log(response);
@@ -397,7 +399,10 @@ class UnaFichaCotizacionWeb extends Component {
               'Content-Type': 'text/plain'
               }
             })
-            .then(res => res.json())
+            .then(res => res.json(
+              this.props.desplegarEdicion("cargando", "", "")
+
+            ))
             .then(response => {if(response.data){
                             this.props.peticionDetalle()
                             console.log(response);
