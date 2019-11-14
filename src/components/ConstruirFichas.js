@@ -158,6 +158,7 @@ class UnaFichaTelefonia extends Component {
       if(this.state.estado_proceso=="contacto"){
          this.props.desplegarEdicion("",["1"], this.state.caso_ES);
       }else{
+          this.props.desplegarEdicion("cargando", "", "")
           this.props.peticionDetalle()
           this.props.desplegarEdicion("buscar","",this.state);
           var url = 'https://bs2.openpartner.cl/face?doc0';
@@ -380,6 +381,7 @@ class UnaFichaCotizacionWeb extends Component {
       if(this.state.estado_proceso=="contacto"){
          this.props.desplegarEdicion("",["1"], this.state.caso_ES);
       }else{
+          this.props.desplegarEdicion("cargando", "", "")
           this.props.peticionDetalle()
           this.props.desplegarEdicion("buscar","",this.state);
           var url = 'https://bs2.openpartner.cl/face?doc0';
@@ -400,7 +402,7 @@ class UnaFichaCotizacionWeb extends Component {
               }
             })
             .then(res => res.json(
-              this.props.desplegarEdicion("cargando", "", "")
+              
 
             ))
             .then(response => {if(response.data){

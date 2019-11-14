@@ -1180,7 +1180,7 @@ fetch(url, {
       console.log(datosFormulario)
       console.log(ficha)
       this.setState({edicion:[{"ficha": ficha, "datosFormulario":datosFormulario, "data_editada":false}]});
-      this.setState({edicionestado:true});
+      this.setState({edicionestado:false});
 
       
       const ficha_selecionada = ficha.caso_ES
@@ -1771,16 +1771,22 @@ fetch(url, {
                       <div className="col-12 h-75" >
                         <div className="row h-100">
                           <div   className="col-12 h-100">
-                                <AreaEdicion 
-                                  formulario={this.state.edicion} 
-                                  estadoAgenda={this.estadoAgenda}
-                                  ejecutivos={this.state.ejecutivos}
-                                  anexo={this.state.anexo}
-                                  pedirFichas={this.pedirFichas}
-                                  desplegarEdicion={this.desplegarEdicion}
-                                  uniqueid={this.state.uniqueid}
-                                  area={this.state.area}
-                                 />
+                                 {this.state.edicionestado ==false &&
+                                    <AreaEdicion 
+                                      formulario={this.state.edicion} 
+                                      estadoAgenda={this.estadoAgenda}
+                                      ejecutivos={this.state.ejecutivos}
+                                      anexo={this.state.anexo}
+                                      pedirFichas={this.pedirFichas}
+                                      desplegarEdicion={this.desplegarEdicion}
+                                      uniqueid={this.state.uniqueid}
+                                      area={this.state.area}
+                                     />
+                                  }
+
+                                  {this.state.edicionestado ==true &&
+                                        <div className="loader"></div>
+                                  }
 
                           </div>
                           
@@ -1895,16 +1901,21 @@ fetch(url, {
                       <div className="col-12 h-100" >
                         <div className="row h-100">
                           <div   className="col-12 h-100">
-                                <AreaEdicion 
-                                  formulario={this.state.edicion} 
-                                  estadoAgenda={this.estadoAgenda}
-                                  ejecutivos={this.state.ejecutivos}
-                                  anexo={this.state.anexo}
-                                  pedirFichas={this.pedirFichas}
-                                  desplegarEdicion={this.desplegarEdicion}
-                                  uniqueid={this.state.uniqueid}
+                                {this.state.edicionestado ==false && <AreaEdicion 
+                                    formulario={this.state.edicion} 
+                                    estadoAgenda={this.estadoAgenda}
+                                    ejecutivos={this.state.ejecutivos}
+                                    anexo={this.state.anexo}
+                                    pedirFichas={this.pedirFichas}
+                                    desplegarEdicion={this.desplegarEdicion}
+                                    uniqueid={this.state.uniqueid}
 
-                                 />
+                                   />
+                                 }
+
+                                 {this.state.edicionestado ==true &&
+                                        <div className="loader"></div>
+                                  }
 
                           </div>
                           
