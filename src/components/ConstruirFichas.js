@@ -259,7 +259,7 @@ class UnaFichaTelefonia extends Component {
             if(prop=="datos_ficha"){
               for(const prop_dos in ficha[prop]){
                 console.log(ficha[prop][prop_dos])
-                if(ficha[prop][prop_dos].slice(0, dimension)==this.props.searchFiltro){
+                if(ficha[prop][prop_dos].slice(0, dimension).toLowerCase()==this.props.searchFiltro.toLowerCase()){
                   return true;
                 }
               }
@@ -479,7 +479,7 @@ class UnaFichaCotizacionWeb extends Component {
             if(prop=="datos_ficha"){
               for(const prop_dos in ficha[prop]){
                 console.log(ficha[prop][prop_dos])
-                if(ficha[prop][prop_dos].slice(0, dimension)==this.props.searchFiltro){
+                if(ficha[prop][prop_dos].slice(0, dimension).toLowerCase()==this.props.searchFiltro.toLowerCase()){
                   return true;
                 }
               }

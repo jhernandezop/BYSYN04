@@ -403,6 +403,11 @@ actualizarGestionData(event){
     
  
 }
+
+verCorreo =()=>{
+  console.log(this.props.formulario[0].datosFormulario.doc_no_correo)
+  document.location = this.props.formulario[0].datosFormulario.doc_no_correo;
+}
  
 /*<div key={key} className="form-group">
           <label for={"exampleInputEmail1"+key}>{key}</label>
@@ -437,6 +442,9 @@ actualizarGestionData(event){
                 {this.state.formulario=="tipificacion" && <Form form={tipificacion} onSubmit={this.enviargestion} />}
 
                 <div className="btn-group"  role="group" aria-label="Basic example">
+                  {this.state.ficha_canal=="web" && this.props.formulario[0].datosFormulario.doc_no_correo!="" &&
+                      <a  href={"mailto:"+this.props.formulario[0].datosFormulario.doc_no_correo}  className="btn btn-secondary">Enviar Email</a>
+                  }
                   <button type="button" onClick={() => this.verFomrularioTipificacion("detalleLLamada")} className="btn btn-secondary">Detalle</button>
                   <button type="button" onClick={() => this.verFomrularioTipificacion("tipificacion")} className="btn btn-secondary">Tipificar</button>
                 </div>
@@ -453,6 +461,9 @@ actualizarGestionData(event){
                 {this.state.formulario=="seguimiento"  && <Form form={tipificacionServicioNuevoGestion} onSubmit={this.enviargestion} />}
                 {this.state.formulario=="tipificacion" && <Form form={tipificacion_servicio} onSubmit={this.enviargestion} />}
                 <div className="btn-group"  role="group" aria-label="Basic example">
+                  {this.state.ficha_canal=="web" && this.props.formulario[0].datosFormulario.doc_no_correo!="" &&
+                      <a  href={"mailto:"+this.props.formulario[0].datosFormulario.doc_no_correo}  className="btn btn-secondary">Enviar Email</a>
+                  }
                   <button type="button" onClick={() => this.verFomrularioTipificacion("detalleLLamada")} className="btn btn-secondary">Detalle</button>
                   <button type="button" onClick={() => this.verFomrularioTipificacion("tipificacion")} className="btn btn-secondary">Tipificar</button>
                 </div>

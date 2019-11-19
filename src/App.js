@@ -12,6 +12,7 @@ import Search from './components/Search';
 import Timelines from './components/Timeline';
 import ReporteUsuario from './components/ReporteUsuario';
 import ReporteSupervisor from './components/ReporteSupervisor';
+import Nota from './components/Nota';
 import moment from 'moment';
 
 
@@ -354,6 +355,11 @@ class App extends Component {
                                 console.log(element)
                                 fichas_nuevas.push(element)
                               }
+
+                              //CAMPO DE NOMBRE PARA FICHAS TIPO WEB
+                              if(element.caso_canal=="web"){
+                                  element.datos_ficha["nombre_completo"]=element.datos_ficha.doc_nombre+" "+element.datos_ficha.doc_Ap_paterno;
+                              }
                             }); 
                             console.log(fichas_nuevas)
                             //const newfichas=this.state.fichas.concat(fichas_nuevas)
@@ -591,7 +597,10 @@ class App extends Component {
                                           }
                                   }
                                   //INSERTO FICHAS A AGRUPACION
-                                  
+                                  //CAMPO DE NOMBRE PARA FICHAS TIPO WEB
+                                  if(element.caso_canal=="web"){
+                                    element.datos_ficha["nombre_completo"]=element.datos_ficha.doc_nombre+" "+element.datos_ficha.doc_Ap_paterno;
+                                  }
                  
                               })//FIN DE RECCORRIDO DE LA RESPUESTA
                               console.log(agendamientos)
@@ -1788,6 +1797,10 @@ fetch(url, {
                                         <div className="loader"></div>
                                   }
 
+                                  {this.state.edicionestado ==false && this.state.edicion=="" &&
+                                        <Nota />
+                                  }
+
                           </div>
                           
                         </div>
@@ -1915,6 +1928,10 @@ fetch(url, {
 
                                  {this.state.edicionestado ==true &&
                                         <div className="loader"></div>
+                                  }
+
+                                  {this.state.edicionestado ==false && this.state.edicion=="" &&
+                                        <div className="loader">X</div>
                                   }
 
                           </div>

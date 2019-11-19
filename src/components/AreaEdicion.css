@@ -89,6 +89,12 @@ background-color: #FFF;
     border-color: #007bff;
 }
 
+
+.formio-form #ver_email {
+    margin-left: -12px;
+    margin-top: 20px;
+}
+
 .contenedorFormularios .form-control {
     font-size: 12px;
     font-weight: 300;
