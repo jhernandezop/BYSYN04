@@ -71,6 +71,19 @@ class Vertelefono extends Component {
         
     }
 
+    marcadomanual=(e)=>{
+        //console.log(e.target.value.replace(/[a-z]/, ''))
+        const newDato=e.target.value.replace(/[a-z]/, '');
+        if(Number(newDato)){
+            this.setState({numero:newDato})
+        }else if(newDato==""){
+            this.setState({numero:this.state.numero.slice(0, -1)})    
+        }
+
+        
+
+    }
+
   render() {
 
     const telefono=this.state.numero
@@ -90,7 +103,7 @@ class Vertelefono extends Component {
                     </div>
                     <div className={this.state.expandida ? '' : 'minimizada'}>
                         <div>
-                            <input className="numero" type="text" value={telefono}   />
+                            <input onChange={this.marcadomanual} className="numero" type="text" value={telefono}   />
                         </div>
                         <div>
                             <div className="tecla" onClick={() => this.numero('1')}>1</div>
